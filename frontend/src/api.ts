@@ -56,4 +56,18 @@ export async function getPostsByAuthor(authorId: number) {
   const res = await fetch(`${API_BASE}/posts?author_id=${authorId}`);
   if (!res.ok) throw new Error('Failed to fetch posts');
   return await res.json();
+}
+
+export async function updateUser(id: number, data: { name?: string; avatarUrl?: string; bio?: string }) {
+  const token = getToken();
+  const res = await fetch(`${API_BASE}/users/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to update user');
+  return await res.json();
 } 

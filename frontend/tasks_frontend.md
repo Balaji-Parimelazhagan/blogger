@@ -135,6 +135,20 @@ feat(frontend): implement user profile page with posts list and avatar
 - **Acceptance Criteria:**
   - User can update profile fields.
   - Shows success/error feedback.
+- **Status:** ✅ COMPLETED
+  - Implemented ProfileEdit page for editing name, avatar URL, and bio.
+  - Integrated with backend API for updating user profile.
+  - Shows success and error feedback, disables submit on invalid.
+  - Route protected by ProtectedRoute.
+
+#### Commit message:
+
+feat(frontend): add profile edit page with update functionality
+
+- Implement ProfileEdit page for editing user info
+- Integrate with backend API for update
+- Show success/error feedback and loading state
+- Protect route with ProtectedRoute
 
 ---
 
@@ -204,39 +218,4 @@ feat(frontend): implement user profile page with posts list and avatar
 - **User Story:** [As a writer: I want to relate posts](docs/PROJECT.md#future-considerations-optional)
 - **Detailed Description:** Display and manage related posts for a blog post (add/remove, author only).
 - **Files/Components:** `components/RelatedPosts.tsx`, `pages/PostView.tsx`
-- **Dependencies:** FE-009, `GET /posts/{id}/related`, `POST /posts/{id}/related`, `DELETE /posts/{id}/related/{related_post_id}`
-- **Complexity:** Medium
-- **Estimated Time:** 4h
-- **Acceptance Criteria:**
-  - Related posts are displayed.
-  - Author can add/remove related posts.
-
----
-
-## UI/UX & Utilities
-
-### FE-014: Loader, Error, and Modal Components
-- **User Story:** N/A (Technical/UX requirement)
-- **Detailed Description:** Implement reusable Loader, ErrorMessage, and Modal components for consistent UX.
-- **Files/Components:** `components/Loader.tsx`, `components/ErrorMessage.tsx`, `components/Modal.tsx`
-- **Dependencies:** FE-001
-- **Complexity:** Low
-- **Estimated Time:** 3h
-- **Acceptance Criteria:**
-  - Components are reusable and accessible.
-  - Used across pages for loading, errors, and dialogs.
-
-### FE-015: Routing & 404 Page
-- **User Story:** N/A (Technical requirement)
-- **Detailed Description:** Set up React Router with nested/protected routes and a 404 fallback page.
-- **Files/Components:** `App.tsx`, `pages/NotFound.tsx`, `components/ProtectedRoute.tsx`
-- **Dependencies:** FE-001, FE-005
-- **Complexity:** Low
-- **Estimated Time:** 2h
-- **Acceptance Criteria:**
-  - All routes work as specified.
-  - 404 page displays for unknown routes.
-
----
-
-# End of Task List 
+- **Dependencies:** FE-009, `GET /posts/{id}/related`, `POST /posts/{id}/related`, `

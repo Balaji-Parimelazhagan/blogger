@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
+import ProfileEdit from './pages/ProfileEdit';
 
 const App: React.FC = () => (
   <BrowserRouter>
@@ -18,6 +19,11 @@ const App: React.FC = () => (
         <Route path="profile" element={
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="profile/edit" element={
+          <ProtectedRoute>
+            <ProfileEdit />
           </ProtectedRoute>
         } />
         <Route path="*" element={<NotFound />} />
