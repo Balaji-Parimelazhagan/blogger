@@ -223,6 +223,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /posts/{id}:
+    get:
+      summary: Get blog post by ID
+      tags: [Posts]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Post ID
+      responses:
+        '200':
+          description: Blog post object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPostResponse'
+        '403':
+          description: Forbidden (not author and not published)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   securitySchemes:
     bearerAuth:

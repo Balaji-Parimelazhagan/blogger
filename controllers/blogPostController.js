@@ -1,6 +1,7 @@
 const BlogPost = require('../models/blogPost');
 const { validationResult } = require('express-validator');
 const DOMPurify = require('isomorphic-dompurify');
+const User = require('../models/user');
 
 exports.createPost = async (req, res, next) => {
   try {
@@ -46,6 +47,24 @@ exports.listPosts = async (req, res, next) => {
       order: [[sortBy, order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC']],
     });
     res.json(posts);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getPostById = async (req, res, next) => {
+  try {
+    const post = await BlogPost.findByPk(req.params.id);
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+    // If not published, only author can view
+    if (!post.published) {
+      if (!req.user || req.user.id !== post.author_id) {
+        return res.status(403).json({ error: 'Forbidden: Not allowed to view this draft' });
+      }
+    }
+    res.json(post);
   } catch (err) {
     next(err);
   }

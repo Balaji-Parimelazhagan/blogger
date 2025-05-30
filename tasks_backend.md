@@ -128,6 +128,7 @@ This is a living document for tracking backend development tasks. Update as work
   - Returns post if published or user is author.
   - Returns 404/403 as appropriate.
 - **Suggested Approach/Notes:** Check published status and user ownership.
+- **Status:** ✅ Completed. Implemented GET /posts/{id} with access control and Swagger docs. No deviations.
 
 ### BE-009: Update Blog Post
 - **User Story:** [As a writer: I want to edit my blog post](docs/PROJECT.md#user-stories--flows)

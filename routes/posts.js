@@ -10,4 +10,16 @@ router.post('/', auth, createPostValidator, blogPostController.createPost);
 // GET /posts - List blog posts
 router.get('/', blogPostController.listPosts);
 
+// Optional auth middleware for GET /posts/:id
+const optionalAuth = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return auth(req, res, next);
+  }
+  next();
+};
+
+// GET /posts/:id - Get blog post by ID
+router.get('/:id', optionalAuth, blogPostController.getPostById);
+
 module.exports = router; 
