@@ -49,6 +49,7 @@ This is a living document for tracking backend development tasks. Update as work
   - Validates and updates allowed fields.
   - Returns updated user object.
 - **Suggested Approach/Notes:** Use JWT for authentication. Validate input.
+- **Status:** ✅ Completed. Implemented PUT /users/:id with JWT auth, input validation, error handling, and tests. No deviations.
 
 ---
 

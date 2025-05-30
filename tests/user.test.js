@@ -2,6 +2,7 @@ const request = require('supertest');
 const app = require('../app');
 const User = require('../models/user');
 const { sequelize } = require('../models');
+const jwt = require('jsonwebtoken');
 
 describe('POST /users', () => {
   beforeAll(async () => {
@@ -77,5 +78,56 @@ describe('GET /users/:id', () => {
     const res = await request(app).get('/users/99999');
     expect(res.statusCode).toBe(404);
     expect(res.body).toHaveProperty('error');
+  });
+});
+
+describe('PUT /users/:id', () => {
+  let user, token;
+  beforeAll(async () => {
+    await sequelize.sync({ force: true });
+    user = await User.create({ name: 'Dave', email: 'dave@example.com', password: 'hashed' });
+    token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+  });
+  afterAll(async () => {
+    await sequelize.close();
+  });
+
+  it('updates own profile successfully', async () => {
+    const res = await request(app)
+      .put(`/users/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'David', bio: 'New bio' });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty('name', 'David');
+    expect(res.body).toHaveProperty('bio', 'New bio');
+    expect(res.body).not.toHaveProperty('password');
+  });
+
+  it('returns 403 if updating another user', async () => {
+    const other = await User.create({ name: 'Eve', email: 'eve@example.com', password: 'hashed' });
+    const res = await request(app)
+      .put(`/users/${other.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'Evil' });
+    expect(res.statusCode).toBe(403);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('returns 404 if user not found', async () => {
+    const res = await request(app)
+      .put('/users/99999')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'Ghost' });
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('returns 400 for invalid input', async () => {
+    const res = await request(app)
+      .put(`/users/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: '' });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('errors');
   });
 }); 

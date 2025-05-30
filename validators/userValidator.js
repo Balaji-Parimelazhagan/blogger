@@ -11,4 +11,17 @@ exports.registerValidator = [
     }
     next();
   },
+];
+
+exports.updateProfileValidator = [
+  body('name').optional().isString().trim().notEmpty().withMessage('Name must be a non-empty string'),
+  body('avatar_url').optional().isString().isLength({ max: 255 }).withMessage('Avatar URL must be a string'),
+  body('bio').optional().isString().withMessage('Bio must be a string'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  },
 ]; 
