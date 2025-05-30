@@ -176,6 +176,7 @@ This is a living document for tracking backend development tasks. Update as work
   - Validates content.
   - Returns created comment object.
 - **Suggested Approach/Notes:** Sanitize input, check post existence.
+- **Status:** ✅ Completed. Implemented POST /posts/{post_id}/comments with model, migration, validation, sanitization, access control, and Swagger docs. No deviations.
 
 ### BE-012: List Comments for Post
 - **User Story:** [As a reader: I want to read comments on posts](docs/PROJECT.md#user-stories--flows)

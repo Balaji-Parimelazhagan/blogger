@@ -28,4 +28,7 @@ router.put('/:id', auth, require('../validators/blogPostValidator').updatePostVa
 // DELETE /posts/:id - Delete blog post (author only)
 router.delete('/:id', auth, blogPostController.deletePost);
 
+// Mount comments router
+router.use('/:post_id/comments', require('./comments'));
+
 module.exports = router; 
