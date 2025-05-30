@@ -36,7 +36,7 @@ const Profile: React.FC = () => {
       ) : error ? (
         <div style={{ color: 'red' }}>{error}</div>
       ) : (
-        <PostList posts={posts} />
+        <PostList posts={posts.map(post => ({ ...post, createdAt: post.created_at }))} />
       )}
     </div>
   );
