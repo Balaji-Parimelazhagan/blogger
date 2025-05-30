@@ -18,33 +18,43 @@ const Landing: React.FC = () => {
   }, []);
 
   const featured = posts.length ? { ...posts[0], image: heroImg } : null;
-  const rest = posts.length > 1 ? posts.slice(1).map((p: any, i: number) => ({ ...p, image: i % 2 === 0 ? heroImg : undefined })) : [];
+  const rest = posts.length > 1 ? posts.slice(1) : [];
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 1.5rem 2.5rem 1.5rem' }}>
-      {featured && (
-        <div style={{ marginBottom: '2.5rem' }}>
-          <img src={heroImg} alt="Hero" style={{ width: '100%', borderRadius: 18, marginBottom: '2.2rem', objectFit: 'cover', maxHeight: 320 }} />
-          <Card post={featured} highlight onClick={() => window.location.href = `/posts/${featured.id}`} />
-        </div>
-      )}
-      {loading ? (
-        <div>Loading posts...</div>
-      ) : error ? (
-        <div style={{ color: 'red' }}>{error}</div>
-      ) : posts.length === 0 ? (
-        <div>No posts yet. Stay tuned!</div>
-      ) : (
-        <>
-          <h2 style={{ margin: '2.5rem 0 1.5rem 0', fontSize: '1.3rem', fontWeight: 700 }}>Recent Posts</h2>
+    <main style={{ background: '#f7f8fa', minHeight: '100vh' }}>
+      {/* Hero Section */}
+      <section style={{ width: '100%', maxHeight: 340, overflow: 'hidden', marginBottom: '2.5rem' }}>
+        <img src={heroImg} alt="Hero" style={{ width: '100%', height: 340, objectFit: 'cover', display: 'block' }} />
+      </section>
+
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 2.5rem' }}>
+        {/* Featured Post */}
+        {featured && (
+          <section style={{ marginBottom: '2.5rem' }}>
+            <h1 style={{ fontSize: '2.2rem', fontWeight: 800, margin: '0 0 1.5rem 0', letterSpacing: '-1.5px' }}>Featured</h1>
+            <Card post={featured} highlight onClick={() => window.location.href = `/posts/${featured.id}`} />
+          </section>
+        )}
+
+        {/* Recent Posts */}
+        <section>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: '0 0 1.2rem 0', letterSpacing: '-0.5px' }}>Recent Posts</h2>
+          {loading && <div>Loading...</div>}
+          {error && <div style={{ color: 'red' }}>{error}</div>}
+          {!loading && !error && rest.length === 0 && <div>No recent posts yet.</div>}
           <div>
-            {rest.map((post: any) => (
-              <Card key={post.id} post={post} onClick={() => window.location.href = `/posts/${post.id}`} />
+            {rest.map((post, i) => (
+              <Card
+                key={post.id}
+                post={post}
+                layout={i % 2 === 0 ? 'left' : 'right'}
+                onClick={() => window.location.href = `/posts/${post.id}`}
+              />
             ))}
           </div>
-        </>
-      )}
-    </div>
+        </section>
+      </div>
+    </main>
   );
 };
 

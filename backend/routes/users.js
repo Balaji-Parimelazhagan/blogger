@@ -8,6 +8,9 @@ const auth = require('../middleware/auth');
 // POST /users - Register
 router.post('/', rateLimiter, registerValidator, userController.register);
 
+// GET /users/me
+router.get('/me', auth, userController.me);
+
 // GET /users/:id
 router.get('/:id', userController.getProfile);
 

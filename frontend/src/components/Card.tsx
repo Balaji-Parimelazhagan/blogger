@@ -9,15 +9,18 @@ interface CardProps {
   };
   onClick?: () => void;
   highlight?: boolean;
+  layout?: 'left' | 'right';
+  hideImage?: boolean;
 }
 
 const placeholder = 'https://via.placeholder.com/160x120?text=Image';
 
-const Card: React.FC<CardProps> = ({ post, onClick, highlight = false }) => (
+const Card: React.FC<CardProps> = ({ post, onClick, highlight = false, layout = 'left', hideImage = false }) => (
   <div
     className="card"
     style={{
       display: 'flex',
+      flexDirection: layout === 'right' ? 'row-reverse' : 'row',
       alignItems: 'stretch',
       background: '#fff',
       borderRadius: 16,
@@ -32,19 +35,21 @@ const Card: React.FC<CardProps> = ({ post, onClick, highlight = false }) => (
     }}
     onClick={onClick}
   >
-    <img
-      src={post.image || placeholder}
-      alt="Post visual"
-      style={{
-        width: 160,
-        height: 120,
-        objectFit: 'cover',
-        borderRadius: 12,
-        background: '#f3f3f3',
-        flexShrink: 0,
-        alignSelf: 'center',
-      }}
-    />
+    {!hideImage && (
+      <img
+        src={post.image || placeholder}
+        alt="Post visual"
+        style={{
+          width: 160,
+          height: 120,
+          objectFit: 'cover',
+          borderRadius: 12,
+          background: '#f3f3f3',
+          flexShrink: 0,
+          alignSelf: 'center',
+        }}
+      />
+    )}
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       <h2 style={{ margin: 0, fontSize: highlight ? '1.6rem' : '1.2rem', fontWeight: 700 }}>{post.title}</h2>
       {post.excerpt && <p style={{ margin: '0.7rem 0 1.2rem 0', color: '#444', fontSize: '1rem', lineHeight: 1.5 }}>{post.excerpt}</p>}

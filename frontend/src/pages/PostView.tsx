@@ -8,6 +8,8 @@ import RelatedPosts from '../components/RelatedPosts';
 import CommentForm from '../components/CommentForm';
 import { useAuth } from '../AuthContext';
 
+const heroImg = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80';
+
 const PostView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<any>(null);
@@ -20,63 +22,92 @@ const PostView: React.FC = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!id) return;
     setLoading(true);
     api.getPostById(Number(id))
-      .then((p) => {
+      .then(async (p) => {
         setPost(p);
-        return api.getUserById(p.authorId);
+        const a = await api.getUserById(p.author_id);
+        setAuthor(a);
       })
-      .then(setAuthor)
       .catch(() => setError('Failed to load post'))
       .finally(() => setLoading(false));
   }, [id]);
 
-  const handleAddComment = async (content: string) => {
+  const handleComment = async (content: string) => {
     setCommentLoading(true);
     setCommentError(null);
     try {
-      await api.addComment(post.id, content);
-      if (commentListRef.current) commentListRef.current.refresh();
-    } catch (err: any) {
-      setCommentError(err.message || 'Failed to add comment');
+      await api.addComment(Number(id), content);
+      commentListRef.current?.refresh();
+    } catch (e: any) {
+      setCommentError(e.message || 'Failed to add comment');
     } finally {
       setCommentLoading(false);
     }
   };
 
-  if (loading) return <div className="container">Loading post...</div>;
-  if (error || !post) return <div className="container" style={{ color: 'red' }}>{error || 'Post not found.'}</div>;
+  if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>;
+  if (error || !post) return <div style={{ padding: '2rem', color: 'red', textAlign: 'center' }}>{error || 'Post not found.'}</div>;
 
   return (
-    <div className="container" style={{ maxWidth: 700 }}>
-      <article className="card" style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{post.title}</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-          <Avatar name={author?.name || 'Unknown'} size={40} />
-          <div>
-            <div style={{ fontWeight: 600 }}>{author?.name || 'Unknown'}</div>
-            <div style={{ color: '#666', fontSize: '0.95em' }}>{new Date(post.createdAt).toLocaleDateString()}</div>
+    <main style={{ background: '#f7f8fa', minHeight: '100vh', padding: '0 0 3rem 0' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', gap: '2.5rem', alignItems: 'flex-start', flexWrap: 'wrap', padding: '2.5rem 2rem 0 2rem' }}>
+        {/* Main Content */}
+        <section style={{ flex: '1 1 600px', minWidth: 0 }}>
+          {/* Hero Section */}
+          <div style={{ marginBottom: '2.5rem', background: '#fff', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', padding: '2.5rem 2.5rem 2rem 2.5rem' }}>
+            <h1 style={{ fontSize: '2.3rem', fontWeight: 800, margin: 0, letterSpacing: '-1.5px', lineHeight: 1.15 }}>{post.title}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.1rem', margin: '1.2rem 0 0.7rem 0' }}>
+              <Avatar name={author?.name || 'Unknown'} avatarUrl={author?.avatar_url} size={44} />
+              <div>
+                <div style={{ fontWeight: 600, fontSize: '1.1rem', color: '#222' }}>{author?.name}</div>
+                <div style={{ fontSize: '0.97rem', color: '#888' }}>{new Date(post.created_at).toLocaleDateString()}</div>
+              </div>
+            </div>
+            {/* Optional hero image */}
+            <img src={heroImg} alt="Hero" style={{ width: '100%', maxHeight: 320, objectFit: 'cover', borderRadius: 14, margin: '1.5rem 0 0.5rem 0' }} />
           </div>
-        </div>
-        <div style={{ fontSize: '1.15rem', lineHeight: 1.7 }}>
-          {post.body || post.content}
-        </div>
-      </article>
-      <section className="card" style={{ marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>Comments</h2>
-        {user ? (
-          <CommentForm onSubmit={handleAddComment} loading={commentLoading} error={commentError} />
-        ) : (
-          <div style={{ marginBottom: '1rem', color: '#888' }}>Sign in to add a comment.</div>
-        )}
-        <CommentList ref={commentListRef} postId={post.id} />
-      </section>
-      <section className="card">
-        <h2 style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>Related Posts</h2>
-        <RelatedPosts postId={post.id} userId={user?.id} authorId={post.authorId} />
-      </section>
-    </div>
+
+          {/* Post Content */}
+          <article style={{ background: '#fff', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', padding: '2.2rem 2.5rem', marginBottom: '2.5rem', fontSize: '1.15rem', lineHeight: 1.7, color: '#222' }}>
+            {post.content}
+          </article>
+
+          {/* Comments Section */}
+          <section style={{ background: '#fff', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', padding: '2.2rem 2.5rem', marginBottom: '2.5rem' }}>
+            <h2 style={{ fontSize: '1.3rem', fontWeight: 700, margin: '0 0 1.2rem 0' }}>Comments</h2>
+            <CommentList ref={commentListRef} postId={post.id} />
+            {user && (
+              <div style={{ marginTop: '2rem' }}>
+                <CommentForm onSubmit={handleComment} loading={commentLoading} error={commentError} />
+              </div>
+            )}
+            {!user && <div style={{ marginTop: '2rem', color: '#888' }}>Sign in to add a comment.</div>}
+          </section>
+        </section>
+
+        {/* Sidebar */}
+        <aside style={{ flex: '0 0 320px', minWidth: 280, maxWidth: 340, width: '100%' }}>
+          <div style={{ position: 'sticky', top: 32 }}>
+            <section className="card" style={{ background: '#fff', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', padding: '2rem 1.5rem', marginBottom: '2.5rem' }}>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 1.2rem 0' }}>Related Posts</h2>
+              <RelatedPosts postId={post.id} userId={user?.id} authorId={post.author_id} />
+            </section>
+          </div>
+        </aside>
+      </div>
+      {/* Responsive styles */}
+      <style>{`
+        @media (max-width: 900px) {
+          main > div { flex-direction: column; gap: 0.5rem; }
+          aside { max-width: 100% !important; min-width: 0 !important; width: 100% !important; }
+        }
+        @media (max-width: 600px) {
+          main > div { padding: 0.5rem !important; }
+          section, article { padding: 1.1rem !important; }
+        }
+      `}</style>
+    </main>
   );
 };
 
