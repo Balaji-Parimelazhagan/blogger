@@ -88,7 +88,17 @@ feat(frontend): implement login page with validation and AuthContext integration
   - Auth state is available throughout app.
   - Protected routes redirect unauthenticated users.
 - **Status:** ✅ COMPLETED
-  - AuthContext implemented in `AuthContext.tsx`, provides user state and auth actions. App wrapped in AuthProvider. `useAuth` hook available. (ProtectedRoute to be added with protected pages.)
+  - AuthContext provides user state and auth actions throughout the app.
+  - Added ProtectedRoute component to guard authenticated routes.
+  - Updated App.tsx to protect /profile route.
+
+#### Commit message:
+
+feat(frontend): add ProtectedRoute and enforce auth on protected pages
+
+- Add ProtectedRoute component
+- Protect /profile route in App.tsx
+- Ensure unauthenticated users are redirected to login
 
 ### FE-006: User Profile Page
 - **User Story:** [As a reader: I want to view user profiles](docs/PROJECT.md#user-stories--flows)
