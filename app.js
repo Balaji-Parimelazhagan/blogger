@@ -2,6 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const usersRouter = require('./routes/users');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
 
 // Middleware
 app.use(express.json());
@@ -10,6 +13,7 @@ app.use(express.json());
 // TODO: Add user, post, comment, related routes
 // Example: app.use('/users', require('./routes/users'));
 app.use('/users', usersRouter);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // 404 handler
 app.use((req, res, next) => {
