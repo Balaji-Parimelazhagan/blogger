@@ -88,4 +88,32 @@ export async function getRelatedPosts(postId: number) {
   const res = await fetch(`${API_BASE}/posts/${postId}/related`);
   if (!res.ok) throw new Error('Failed to fetch related posts');
   return await res.json();
+}
+
+export async function createPost(data: { title: string; body: string; excerpt?: string }) {
+  const token = getToken();
+  const res = await fetch(`${API_BASE}/posts`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to create post');
+  return await res.json();
+}
+
+export async function updatePost(id: number, data: { title: string; body: string; excerpt?: string }) {
+  const token = getToken();
+  const res = await fetch(`${API_BASE}/posts/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to update post');
+  return await res.json();
 } 

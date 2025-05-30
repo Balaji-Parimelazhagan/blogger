@@ -216,6 +216,21 @@ feat(frontend): implement blog post view page with comments and related posts
   - User can create/edit posts with validation.
   - Autosave draft works.
   - Shows success/error feedback.
+- **Status:** ✅ COMPLETED
+  - Implemented CreatePost and EditPost pages with PostForm component.
+  - Integrated with backend API for creating and editing posts.
+  - Shows success/error feedback and disables submit on invalid.
+  - Routes protected by ProtectedRoute.
+
+#### Commit message:
+
+feat(frontend): add create/edit post pages and reusable PostForm
+
+- Implement CreatePost and EditPost pages
+- Add PostForm component with validation
+- Integrate with backend API for create/edit
+- Show success/error feedback and loading state
+- Protect routes with ProtectedRoute
 
 ### FE-011: My Posts/Drafts Page
 - **User Story:** [As a returning user: I want to access my posts and drafts](docs/PROJECT.md#user-stories--flows)

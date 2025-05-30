@@ -10,6 +10,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ProfileEdit from './pages/ProfileEdit';
 import Landing from './pages/Landing';
 import PostView from './pages/PostView';
+import CreatePost from './pages/CreatePost';
+import EditPost from './pages/EditPost';
 
 const App: React.FC = () => (
   <BrowserRouter>
@@ -29,6 +31,16 @@ const App: React.FC = () => (
           </ProtectedRoute>
         } />
         <Route path="posts/:id" element={<PostView />} />
+        <Route path="posts/new" element={
+          <ProtectedRoute>
+            <CreatePost />
+          </ProtectedRoute>
+        } />
+        <Route path="posts/:id/edit" element={
+          <ProtectedRoute>
+            <EditPost />
+          </ProtectedRoute>
+        } />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
