@@ -7,4 +7,7 @@ const auth = require('../middleware/auth');
 // POST /posts - Create a new blog post
 router.post('/', auth, createPostValidator, blogPostController.createPost);
 
+// GET /posts - List blog posts
+router.get('/', blogPostController.listPosts);
+
 module.exports = router; 

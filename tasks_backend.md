@@ -114,6 +114,7 @@ This is a living document for tracking backend development tasks. Update as work
   - Returns paginated list of posts.
   - Supports filters and sorting.
 - **Suggested Approach/Notes:** Use Sequelize query options for filtering/sorting.
+- **Status:** ✅ Completed. Implemented GET /posts with filtering, pagination, sorting, and Swagger docs. No deviations.
 
 ### BE-008: Get Blog Post by ID
 - **User Story:** [As a reader: I want to read full blog posts](docs/PROJECT.md#user-stories--flows)
