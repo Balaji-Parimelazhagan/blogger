@@ -1,0 +1,20 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Frontend Rules
+
+## Task Execution
+- Implement tasks based on tasks_frontend.md.
+- Mark tasks with completion notes and links to relevant commits.
+- Component prop structures should align with @docs/FRONTEND_SPEC.md.
+
+## Implementation Standards
+- Use React, Tailwind CSS, and Context Api.
+- Validate all user inputs on the client-side before API submission.
+- API integration must follow @docs/API_SPEC.md, including error handling.
+- Implement clear loading and error states for all asynchronous operations.
+- Adhere to accessibility guidelines (WCAG AA).
+
+- Follow security best practices outlined in general_rules.mdc.

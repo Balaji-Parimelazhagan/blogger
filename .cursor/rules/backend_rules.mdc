@@ -1,0 +1,19 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Backend Rules
+
+## Task Execution
+- Work sequentially through tasks_backend.md, unless dependencies allow parallel work.
+- Mark tasks as completed in tasks_backend.md with a brief note of any deviations.
+
+## Implementation Standards
+- Use Express.js and Sequelize.
+- All API inputs must be validated.
+- Comprehensive error handling for all routes as per @docs/API_SPEC.md.
+- Authentication and authorization mechanisms must strictly follow @docs/API_SPEC.md.
+- Write unit tests for each endpoint/service, aiming for >80% coverage of new logic.
+
+- Follow security best practices outlined in general_rules.mdc and specific to backend.
