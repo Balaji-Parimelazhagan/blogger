@@ -44,4 +44,16 @@ export async function getPosts() {
 
 export function logout() {
   localStorage.removeItem('token');
+}
+
+export async function getUserById(id: number) {
+  const res = await fetch(`${API_BASE}/users/${id}`);
+  if (!res.ok) throw new Error('Failed to fetch user');
+  return await res.json();
+}
+
+export async function getPostsByAuthor(authorId: number) {
+  const res = await fetch(`${API_BASE}/posts?author_id=${authorId}`);
+  if (!res.ok) throw new Error('Failed to fetch posts');
+  return await res.json();
 } 

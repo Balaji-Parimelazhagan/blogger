@@ -110,6 +110,20 @@ feat(frontend): add ProtectedRoute and enforce auth on protected pages
 - **Acceptance Criteria:**
   - User info and posts are displayed.
   - Handles loading and error states.
+- **Status:** ✅ COMPLETED
+  - Implemented Profile page to show current user's info and posts.
+  - Created Avatar and PostList components.
+  - Integrated with backend API for posts by author.
+  - Handles loading and error states.
+
+#### Commit message:
+
+feat(frontend): implement user profile page with posts list and avatar
+
+- Add Avatar and PostList components
+- Show current user's info and posts on Profile page
+- Integrate with backend API
+- Handle loading and error states
 
 ### FE-007: Profile Edit Page
 - **User Story:** [As a returning user: I want to update my profile](docs/PROJECT.md#user-stories--flows)
