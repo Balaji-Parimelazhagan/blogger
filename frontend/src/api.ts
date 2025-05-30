@@ -142,4 +142,30 @@ export async function addComment(postId: number, content: string) {
   });
   if (!res.ok) throw new Error('Failed to add comment');
   return await res.json();
+}
+
+export async function addRelatedPost(postId: number, relatedPostId: number) {
+  const token = getToken();
+  const res = await fetch(`${API_BASE}/posts/${postId}/related`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ related_post_id: relatedPostId }),
+  });
+  if (!res.ok) throw new Error('Failed to add related post');
+  return await res.json();
+}
+
+export async function removeRelatedPost(postId: number, relatedPostId: number) {
+  const token = getToken();
+  const res = await fetch(`${API_BASE}/posts/${postId}/related/${relatedPostId}`, {
+    method: 'DELETE',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (!res.ok) throw new Error('Failed to remove related post');
+  return true;
 } 

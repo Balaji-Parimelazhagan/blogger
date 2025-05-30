@@ -74,7 +74,7 @@ const PostView: React.FC = () => {
       </section>
       <section className="card">
         <h2 style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>Related Posts</h2>
-        <RelatedPosts postId={post.id} />
+        <RelatedPosts postId={post.id} userId={user?.id} authorId={post.authorId} />
       </section>
     </div>
   );
