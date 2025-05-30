@@ -445,6 +445,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    post:
+      summary: Add related post (author only)
+      tags: [Related Posts]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: post_id
+          schema:
+            type: integer
+          required: true
+          description: Blog post ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelatedPostCreate'
+      responses:
+        '201':
+          description: Related post relationship created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedPostResponse'
+        '400':
+          description: Invalid input or relation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden (not author)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Post or related post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   securitySchemes:
     bearerAuth:
@@ -597,4 +646,18 @@ components:
           type: string
         created_at:
           type: string
-          format: date-time 
+          format: date-time
+    RelatedPostCreate:
+      type: object
+      required:
+        - related_post_id
+      properties:
+        related_post_id:
+          type: integer
+    RelatedPostResponse:
+      type: object
+      properties:
+        post_id:
+          type: integer
+        related_post_id:
+          type: integer 

@@ -221,6 +221,7 @@ This is a living document for tracking backend development tasks. Update as work
   - Prevent self-relation.
   - Returns created relationship object.
 - **Suggested Approach/Notes:** Validate post ownership and prevent self-link.
+- **Status:** ✅ Completed. Implemented POST /posts/{post_id}/related with validation, access control, and Swagger docs. No deviations.
 
 ### BE-015: Remove Related Post
 - **User Story:** [As a writer: I want to remove related posts](docs/PROJECT.md#future-considerations-optional)
@@ -234,6 +235,7 @@ This is a living document for tracking backend development tasks. Update as work
   - Only author can remove related post.
   - Returns 204 on success.
 - **Suggested Approach/Notes:** Check ownership before delete.
+- **Status:** ✅ Completed. Implemented DELETE /posts/{post_id}/related/{related_post_id} with access control and Swagger docs. No deviations.
 
 ---
 
