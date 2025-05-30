@@ -22,4 +22,7 @@ const optionalAuth = (req, res, next) => {
 // GET /posts/:id - Get blog post by ID
 router.get('/:id', optionalAuth, blogPostController.getPostById);
 
+// PUT /posts/:id - Update blog post (author only)
+router.put('/:id', auth, require('../validators/blogPostValidator').updatePostValidator, blogPostController.updatePost);
+
 module.exports = router; 

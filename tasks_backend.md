@@ -143,6 +143,7 @@ This is a living document for tracking backend development tasks. Update as work
   - Validates and updates allowed fields.
   - Returns updated post object.
 - **Suggested Approach/Notes:** Validate input, check ownership.
+- **Status:** ✅ Completed. Implemented PUT /posts/{id} with validation, sanitization, access control, and Swagger docs. No deviations.
 
 ### BE-010: Delete Blog Post
 - **User Story:** [As a writer: I want to delete my blog post](docs/PROJECT.md#user-stories--flows)
