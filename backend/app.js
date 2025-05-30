@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const usersRouter = require('./routes/users');
 const swaggerUi = require('swagger-ui-express');
@@ -10,6 +11,12 @@ const postsRouter = require('./routes/posts');
 
 // Middleware
 app.use(express.json());
+
+// CORS setup for frontend
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}));
 
 // Routes
 // TODO: Add user, post, comment, related routes
