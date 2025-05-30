@@ -31,4 +31,7 @@ router.delete('/:id', auth, blogPostController.deletePost);
 // Mount comments router
 router.use('/:post_id/comments', require('./comments'));
 
+// Mount related posts router
+router.use('/:post_id/related', require('./related'));
+
 module.exports = router; 

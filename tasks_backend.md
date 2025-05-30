@@ -206,6 +206,7 @@ This is a living document for tracking backend development tasks. Update as work
 - **Acceptance Criteria:**
   - Returns list of related posts.
 - **Suggested Approach/Notes:** Use join on related_posts table.
+- **Status:** ✅ Completed. Implemented GET /posts/{post_id}/related with join and Swagger docs. No deviations.
 
 ### BE-014: Add Related Post
 - **User Story:** [As a writer: I want to manually relate posts](docs/PROJECT.md#future-considerations-optional)
