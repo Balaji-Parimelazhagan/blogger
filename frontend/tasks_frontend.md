@@ -62,6 +62,20 @@ This is a living document for tracking frontend development tasks. Update as wor
   - User can log in with valid credentials.
   - JWT is stored securely (httpOnly cookie or localStorage).
   - Shows error on failure.
+- **Status:** ✅ COMPLETED
+  - Refactored Login page to use reusable UserForm component.
+  - Integrated with AuthContext for login and error handling.
+  - Shows inline errors, disables submit on invalid, and redirects on success.
+  - JWT is stored in localStorage via AuthContext/api.
+
+#### Commit message:
+
+feat(frontend): implement login page with validation and AuthContext integration
+
+- Refactor Login page to use UserForm
+- Integrate login with AuthContext and backend API
+- Show inline errors, loading, and success states
+- Store JWT in localStorage
 
 ### FE-005: Auth Context & Protected Routes
 - **User Story:** N/A (Technical requirement)
