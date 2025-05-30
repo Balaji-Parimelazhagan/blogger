@@ -68,6 +68,7 @@ This is a living document for tracking backend development tasks. Update as work
   - Returns JWT on successful authentication.
   - Returns 401 on failure.
 - **Suggested Approach/Notes:** Use bcrypt for password check. JWT secret in env config.
+- **Status:** ✅ Completed. Implemented POST /auth/login with JWT, bcrypt, input validation, error handling, and tests. No deviations.
 
 ### BE-005: Auth Middleware
 - **User Story:** N/A (Technical requirement)

@@ -5,6 +5,7 @@ const usersRouter = require('./routes/users');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
+const authRouter = require('./routes/auth');
 
 // Middleware
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(express.json());
 // TODO: Add user, post, comment, related routes
 // Example: app.use('/users', require('./routes/users'));
 app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // 404 handler
