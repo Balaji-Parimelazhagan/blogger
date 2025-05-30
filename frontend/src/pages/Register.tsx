@@ -1,24 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
+import UserForm from '../components/UserForm';
+import { useAuth } from '../AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const Register: React.FC = () => (
-  <div className="card" style={{ maxWidth: 400, margin: '2rem auto' }}>
-    <h2>Register</h2>
-    <form>
-      <div style={{ marginBottom: '1rem' }}>
-        <label htmlFor="name">Name</label><br />
-        <input id="name" type="text" name="name" required style={{ width: '100%', padding: '0.5em' }} />
-      </div>
-      <div style={{ marginBottom: '1rem' }}>
-        <label htmlFor="email">Email</label><br />
-        <input id="email" type="email" name="email" required style={{ width: '100%', padding: '0.5em' }} />
-      </div>
-      <div style={{ marginBottom: '1rem' }}>
-        <label htmlFor="password">Password</label><br />
-        <input id="password" type="password" name="password" required style={{ width: '100%', padding: '0.5em' }} />
-      </div>
-      <button type="submit">Register</button>
-    </form>
-  </div>
-);
+const Register: React.FC = () => {
+  const { register } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
+
+  const handleRegister = async (data: { name: string; email: string; password: string }) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await register(data.name, data.email, data.password);
+      setSuccess(true);
+      setTimeout(() => navigate('/'), 1200);
+    } catch (err: any) {
+      setError(err.message || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="card" style={{ maxWidth: 400, margin: '2rem auto' }}>
+      <h2>Register</h2>
+      {success ? (
+        <div style={{ color: 'green', marginBottom: '1rem' }}>Registration successful! Redirecting...</div>
+      ) : (
+        <UserForm
+          onSubmit={handleRegister}
+          loading={loading}
+          error={error}
+          submitLabel="Register"
+          showNameField={true}
+        />
+      )}
+    </div>
+  );
+};
 
 export default Register; 

@@ -1,5 +1,7 @@
 # Bloggr Frontend Implementation Task List
 
+> **Context:** For UI/UX reference, see the images in the `frontend/images` folder (referred to as `@images`), e.g., `@images/landing-page.png`, `@images/blog-page.png`, `@images/edit-blog.png`.
+
 This is a living document for tracking frontend development tasks. Update as work progresses.
 
 ---
