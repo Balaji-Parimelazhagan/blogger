@@ -34,6 +34,7 @@ This is a living document for tracking backend development tasks. Update as work
   - Returns user profile (no sensitive data).
   - Returns 404 if user not found.
 - **Suggested Approach/Notes:** Exclude password and sensitive fields from response.
+- **Status:** ✅ Completed. Implemented GET /users/:id with proper error handling and tests. No deviations.
 
 ### BE-003: User Profile Update
 - **User Story:** [As a returning user: I want to update my profile](docs/PROJECT.md#user-stories--flows)

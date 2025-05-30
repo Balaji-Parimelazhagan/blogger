@@ -53,4 +53,29 @@ describe('POST /users', () => {
     expect(res.statusCode).toBe(429);
     expect(res.body).toHaveProperty('error');
   });
+});
+
+describe('GET /users/:id', () => {
+  let user;
+  beforeAll(async () => {
+    await sequelize.sync({ force: true });
+    user = await User.create({ name: 'Carol', email: 'carol@example.com', password: 'hashed' });
+  });
+  afterAll(async () => {
+    await sequelize.close();
+  });
+
+  it('returns user profile (no password)', async () => {
+    const res = await request(app).get(`/users/${user.id}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty('id', user.id);
+    expect(res.body).toHaveProperty('email', user.email);
+    expect(res.body).not.toHaveProperty('password');
+  });
+
+  it('returns 404 if user not found', async () => {
+    const res = await request(app).get('/users/99999');
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toHaveProperty('error');
+  });
 }); 

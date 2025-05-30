@@ -7,4 +7,7 @@ const rateLimiter = require('../middleware/rateLimiter');
 // POST /users - Register
 router.post('/', rateLimiter, registerValidator, userController.register);
 
+// GET /users/:id
+router.get('/:id', userController.getProfile);
+
 module.exports = router; 
