@@ -494,6 +494,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /posts/{post_id}/related/{related_post_id}:
+    delete:
+      summary: Remove related post (author only)
+      tags: [Related Posts]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: post_id
+          schema:
+            type: integer
+          required: true
+          description: Blog post ID
+        - in: path
+          name: related_post_id
+          schema:
+            type: integer
+          required: true
+          description: Related post ID
+      responses:
+        '204':
+          description: Related post relationship deleted
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden (not author)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Post or related post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   securitySchemes:
     bearerAuth:

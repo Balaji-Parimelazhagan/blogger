@@ -56,4 +56,25 @@ exports.addRelated = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+exports.removeRelated = async (req, res, next) => {
+  try {
+    const { post_id, related_post_id } = req.params;
+    const post = await BlogPost.findByPk(post_id);
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+    if (!req.user || req.user.id !== post.author_id) {
+      return res.status(403).json({ error: 'Forbidden: Only the author can remove related posts' });
+    }
+    const relation = await RelatedPost.findOne({ where: { post_id, related_post_id } });
+    if (!relation) {
+      return res.status(404).json({ error: 'Related post relationship not found' });
+    }
+    await relation.destroy();
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
 }; 
