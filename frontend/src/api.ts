@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:3000/api'; // Adjust if needed
+const API_BASE = 'http://localhost:3000'; // Adjust if needed
 
 export async function login(email: string, password: string) {
   const res = await fetch(`${API_BASE}/auth/login`, {
@@ -13,7 +13,7 @@ export async function login(email: string, password: string) {
 }
 
 export async function register(name: string, email: string, password: string) {
-  const res = await fetch(`${API_BASE}/auth/register`, {
+  const res = await fetch(`${API_BASE}/users`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, password }),
@@ -128,4 +128,18 @@ export async function deletePost(id: number) {
   });
   if (!res.ok) throw new Error('Failed to delete post');
   return true;
+}
+
+export async function addComment(postId: number, content: string) {
+  const token = getToken();
+  const res = await fetch(`${API_BASE}/posts/${postId}/comments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ content }),
+  });
+  if (!res.ok) throw new Error('Failed to add comment');
+  return await res.json();
 } 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import Avatar from './Avatar';
 import * as api from '../api';
 
@@ -6,18 +6,31 @@ interface CommentListProps {
   postId: number;
 }
 
-const CommentList: React.FC<CommentListProps> = ({ postId }) => {
+export interface CommentListRef {
+  refresh: () => void;
+}
+
+const CommentList = forwardRef<CommentListRef, CommentListProps>(({ postId }, ref) => {
   const [comments, setComments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchComments = () => {
     setLoading(true);
     api.getCommentsByPost(postId)
       .then(setComments)
       .catch(() => setError('Failed to load comments'))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchComments();
+    // eslint-disable-next-line
   }, [postId]);
+
+  useImperativeHandle(ref, () => ({
+    refresh: fetchComments,
+  }));
 
   if (loading) return <div>Loading comments...</div>;
   if (error) return <div style={{ color: 'red' }}>{error}</div>;
@@ -37,6 +50,6 @@ const CommentList: React.FC<CommentListProps> = ({ postId }) => {
       ))}
     </ul>
   );
-};
+});
 
 export default CommentList; 

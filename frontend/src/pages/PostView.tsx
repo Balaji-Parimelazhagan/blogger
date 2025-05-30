@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import * as api from '../api';
 import Avatar from '../components/Avatar';
 import CommentList from '../components/CommentList';
+import type { CommentListRef } from '../components/CommentList';
 import RelatedPosts from '../components/RelatedPosts';
+import CommentForm from '../components/CommentForm';
+import { useAuth } from '../AuthContext';
 
 const PostView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,6 +14,10 @@ const PostView: React.FC = () => {
   const [author, setAuthor] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [commentLoading, setCommentLoading] = useState(false);
+  const [commentError, setCommentError] = useState<string | null>(null);
+  const commentListRef = useRef<CommentListRef>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!id) return;
@@ -24,6 +31,19 @@ const PostView: React.FC = () => {
       .catch(() => setError('Failed to load post'))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const handleAddComment = async (content: string) => {
+    setCommentLoading(true);
+    setCommentError(null);
+    try {
+      await api.addComment(post.id, content);
+      if (commentListRef.current) commentListRef.current.refresh();
+    } catch (err: any) {
+      setCommentError(err.message || 'Failed to add comment');
+    } finally {
+      setCommentLoading(false);
+    }
+  };
 
   if (loading) return <div className="container">Loading post...</div>;
   if (error || !post) return <div className="container" style={{ color: 'red' }}>{error || 'Post not found.'}</div>;
@@ -45,7 +65,12 @@ const PostView: React.FC = () => {
       </article>
       <section className="card" style={{ marginBottom: '2rem' }}>
         <h2 style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>Comments</h2>
-        <CommentList postId={post.id} />
+        {user ? (
+          <CommentForm onSubmit={handleAddComment} loading={commentLoading} error={commentError} />
+        ) : (
+          <div style={{ marginBottom: '1rem', color: '#888' }}>Sign in to add a comment.</div>
+        )}
+        <CommentList ref={commentListRef} postId={post.id} />
       </section>
       <section className="card">
         <h2 style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>Related Posts</h2>
