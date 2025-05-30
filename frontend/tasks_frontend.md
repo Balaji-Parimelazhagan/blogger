@@ -164,6 +164,20 @@ feat(frontend): add profile edit page with update functionality
 - **Acceptance Criteria:**
   - Posts are fetched and displayed in correct layout.
   - Responsive and accessible.
+- **Status:** ✅ COMPLETED
+  - Implemented Landing page with featured and recent posts layout.
+  - Created Card component for featured post.
+  - Used PostList for recent posts.
+  - Integrated with backend API and handled loading/error states.
+
+#### Commit message:
+
+feat(frontend): implement landing page with featured and recent posts
+
+- Add Landing page with hero/featured post and recent posts list
+- Create Card component for featured post
+- Use PostList for recent posts
+- Integrate with backend API and handle loading/error states
 
 ### FE-009: Blog Post View Page
 - **User Story:** [As a reader: I want to read full blog posts](docs/PROJECT.md#user-stories--flows)

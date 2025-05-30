@@ -8,12 +8,13 @@ import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProfileEdit from './pages/ProfileEdit';
+import Landing from './pages/Landing';
 
 const App: React.FC = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
+        <Route index element={<Landing />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="profile" element={
