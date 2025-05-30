@@ -46,6 +46,16 @@ const PostView: React.FC = () => {
     }
   };
 
+  const getContent = () => {
+    if (post.content_html) {
+      return <div dangerouslySetInnerHTML={{ __html: post.content_html }} />;
+    }
+    if (post.content) {
+      return <div>{post.content}</div>;
+    }
+    return <div style={{ color: '#888' }}>No content available.</div>;
+  };
+
   if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>;
   if (error || !post) return <div style={{ padding: '2rem', color: 'red', textAlign: 'center' }}>{error || 'Post not found.'}</div>;
 
@@ -65,12 +75,12 @@ const PostView: React.FC = () => {
               </div>
             </div>
             {/* Optional hero image */}
-            <img src={heroImg} alt="Hero" style={{ width: '100%', maxHeight: 320, objectFit: 'cover', borderRadius: 14, margin: '1.5rem 0 0.5rem 0' }} />
+            <img src={post.image || heroImg} alt="Hero" style={{ width: '100%', maxHeight: 320, objectFit: 'cover', borderRadius: 14, margin: '1.5rem 0 0.5rem 0' }} />
           </div>
 
           {/* Post Content */}
           <article style={{ background: '#fff', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', padding: '2.2rem 2.5rem', marginBottom: '2.5rem', fontSize: '1.15rem', lineHeight: 1.7, color: '#222' }}>
-            {post.content}
+            {getContent()}
           </article>
 
           {/* Comments Section */}

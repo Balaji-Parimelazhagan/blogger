@@ -73,7 +73,12 @@ export async function updateUser(id: number, data: { name?: string; avatarUrl?: 
 }
 
 export async function getPostById(id: number) {
-  const res = await fetch(`${API_BASE}/posts/${id}`);
+  const token = getToken();
+  const res = await fetch(`${API_BASE}/posts/${id}`, {
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
   if (!res.ok) throw new Error('Failed to fetch post');
   return await res.json();
 }
@@ -90,7 +95,7 @@ export async function getRelatedPosts(postId: number) {
   return await res.json();
 }
 
-export async function createPost(data: { title: string; body: string; excerpt?: string }) {
+export async function createPost(data: { title: string; content: string; excerpt?: string }) {
   const token = getToken();
   const res = await fetch(`${API_BASE}/posts`, {
     method: 'POST',
@@ -104,7 +109,7 @@ export async function createPost(data: { title: string; body: string; excerpt?: 
   return await res.json();
 }
 
-export async function updatePost(id: number, data: { title: string; body: string; excerpt?: string }) {
+export async function updatePost(id: number, data: { title: string; content: string; excerpt?: string }) {
   const token = getToken();
   const res = await fetch(`${API_BASE}/posts/${id}`, {
     method: 'PUT',

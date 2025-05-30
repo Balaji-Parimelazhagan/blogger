@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const { sequelize } = require('./index');
+const BlogPost = require('./blogPost');
 
 class RelatedPost extends Model {}
 
