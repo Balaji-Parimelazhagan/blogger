@@ -116,4 +116,16 @@ export async function updatePost(id: number, data: { title: string; body: string
   });
   if (!res.ok) throw new Error('Failed to update post');
   return await res.json();
+}
+
+export async function deletePost(id: number) {
+  const token = getToken();
+  const res = await fetch(`${API_BASE}/posts/${id}`, {
+    method: 'DELETE',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (!res.ok) throw new Error('Failed to delete post');
+  return true;
 } 
