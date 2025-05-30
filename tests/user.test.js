@@ -130,4 +130,21 @@ describe('PUT /users/:id', () => {
     expect(res.statusCode).toBe(400);
     expect(res.body).toHaveProperty('errors');
   });
+
+  it('returns 401 if Authorization header is missing', async () => {
+    const res = await request(app)
+      .put(`/users/${user.id}`)
+      .send({ name: 'NoAuth' });
+    expect(res.statusCode).toBe(401);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('returns 401 if JWT is invalid', async () => {
+    const res = await request(app)
+      .put(`/users/${user.id}`)
+      .set('Authorization', 'Bearer invalidtoken')
+      .send({ name: 'BadToken' });
+    expect(res.statusCode).toBe(401);
+    expect(res.body).toHaveProperty('error');
+  });
 }); 

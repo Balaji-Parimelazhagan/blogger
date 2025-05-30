@@ -6,6 +6,7 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
 const authRouter = require('./routes/auth');
+const postsRouter = require('./routes/posts');
 
 // Middleware
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(express.json());
 // Example: app.use('/users', require('./routes/users'));
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/posts', postsRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // 404 handler

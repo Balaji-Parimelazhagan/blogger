@@ -100,6 +100,7 @@ This is a living document for tracking backend development tasks. Update as work
   - Validates required fields (title, content).
   - Returns created post object.
 - **Suggested Approach/Notes:** Sanitize content to prevent XSS.
+- **Status:** ✅ Completed. Implemented POST /posts with Sequelize model, migration, input validation, XSS sanitization, JWT auth, and Swagger docs. No deviations.
 
 ### BE-007: List Blog Posts
 - **User Story:** [As a reader: I want to browse the homepage](docs/PROJECT.md#user-stories--flows)
