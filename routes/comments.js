@@ -7,4 +7,7 @@ const auth = require('../middleware/auth');
 // POST /posts/:post_id/comments - Add a comment to a post
 router.post('/', auth, addCommentValidator, commentController.addComment);
 
+// GET /posts/:post_id/comments - List comments for a post
+router.get('/', commentController.listComments);
+
 module.exports = router; 

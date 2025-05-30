@@ -189,6 +189,7 @@ This is a living document for tracking backend development tasks. Update as work
 - **Acceptance Criteria:**
   - Returns paginated list of comments for post.
 - **Suggested Approach/Notes:** Use Sequelize pagination.
+- **Status:** ✅ Completed. Implemented GET /posts/{post_id}/comments with pagination and Swagger docs. No deviations.
 
 ---
 
