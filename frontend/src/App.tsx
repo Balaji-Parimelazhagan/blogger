@@ -9,6 +9,7 @@ import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProfileEdit from './pages/ProfileEdit';
 import Landing from './pages/Landing';
+import PostView from './pages/PostView';
 
 const App: React.FC = () => (
   <BrowserRouter>
@@ -27,6 +28,7 @@ const App: React.FC = () => (
             <ProfileEdit />
           </ProtectedRoute>
         } />
+        <Route path="posts/:id" element={<PostView />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

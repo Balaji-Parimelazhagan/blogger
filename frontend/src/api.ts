@@ -70,4 +70,22 @@ export async function updateUser(id: number, data: { name?: string; avatarUrl?: 
   });
   if (!res.ok) throw new Error('Failed to update user');
   return await res.json();
+}
+
+export async function getPostById(id: number) {
+  const res = await fetch(`${API_BASE}/posts/${id}`);
+  if (!res.ok) throw new Error('Failed to fetch post');
+  return await res.json();
+}
+
+export async function getCommentsByPost(postId: number) {
+  const res = await fetch(`${API_BASE}/posts/${postId}/comments`);
+  if (!res.ok) throw new Error('Failed to fetch comments');
+  return await res.json();
+}
+
+export async function getRelatedPosts(postId: number) {
+  const res = await fetch(`${API_BASE}/posts/${postId}/related`);
+  if (!res.ok) throw new Error('Failed to fetch related posts');
+  return await res.json();
 } 

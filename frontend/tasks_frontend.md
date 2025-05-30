@@ -189,6 +189,21 @@ feat(frontend): implement landing page with featured and recent posts
 - **Acceptance Criteria:**
   - Post, author, comments, and related posts are displayed.
   - Handles loading and error states.
+- **Status:** ✅ COMPLETED
+  - Implemented PostView page to show full post, author, comments, and related posts.
+  - Created CommentList and RelatedPosts components.
+  - Integrated with backend API and handled loading/error states.
+  - Added route for /posts/:id.
+
+#### Commit message:
+
+feat(frontend): implement blog post view page with comments and related posts
+
+- Add PostView page for full post display
+- Create CommentList and RelatedPosts components
+- Integrate with backend API for post, comments, and related posts
+- Handle loading and error states
+- Add route for /posts/:id
 
 ### FE-010: Create/Edit Post Page & PostForm
 - **User Story:** [As a writer: I want to create and edit blog posts](docs/PROJECT.md#user-stories--flows)
