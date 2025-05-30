@@ -25,4 +25,7 @@ router.get('/:id', optionalAuth, blogPostController.getPostById);
 // PUT /posts/:id - Update blog post (author only)
 router.put('/:id', auth, require('../validators/blogPostValidator').updatePostValidator, blogPostController.updatePost);
 
+// DELETE /posts/:id - Delete blog post (author only)
+router.delete('/:id', auth, blogPostController.deletePost);
+
 module.exports = router; 

@@ -157,6 +157,7 @@ This is a living document for tracking backend development tasks. Update as work
   - Only author can delete post.
   - Returns 204 on success.
 - **Suggested Approach/Notes:** Check ownership before delete.
+- **Status:** ✅ Completed. Implemented DELETE /posts/{id} with access control and Swagger docs. No deviations.
 
 ---
 

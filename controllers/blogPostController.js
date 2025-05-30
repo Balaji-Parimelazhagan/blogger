@@ -88,4 +88,20 @@ exports.updatePost = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+exports.deletePost = async (req, res, next) => {
+  try {
+    const post = await BlogPost.findByPk(req.params.id);
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+    if (!req.user || req.user.id !== post.author_id) {
+      return res.status(403).json({ error: 'Forbidden: Only the author can delete this post' });
+    }
+    await post.destroy();
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
 }; 
