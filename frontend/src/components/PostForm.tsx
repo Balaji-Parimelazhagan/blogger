@@ -66,7 +66,7 @@ const PostForm: React.FC<PostFormProps> = ({
           onBlur={() => setTouched(t => ({ ...t, title: true }))}
           required
           minLength={3}
-          style={{ width: '100%', padding: '0.5em' }}
+          style={{ width: '100%', padding: '0.5em', borderRadius: 12, border: '1.5px solid rgba(0,0,0,0.18)', outline: 'none', fontSize: '1em' }}
           disabled={loading}
         />
         {touched.title && title.trim().length < 3 && (
@@ -83,7 +83,7 @@ const PostForm: React.FC<PostFormProps> = ({
           required
           minLength={10}
           rows={8}
-          style={{ width: '100%', padding: '0.5em' }}
+          style={{ width: '100%', padding: '0.5em', borderRadius: 12, border: '1.5px solid rgba(0,0,0,0.18)', outline: 'none', fontSize: '1em' }}
           disabled={loading}
         />
         {touched.content && content.trim().length < 10 && (
@@ -97,7 +97,7 @@ const PostForm: React.FC<PostFormProps> = ({
           type="text"
           value={excerpt}
           onChange={e => setExcerpt(e.target.value)}
-          style={{ width: '100%', padding: '0.5em' }}
+          style={{ width: '100%', padding: '0.5em', borderRadius: 12, border: '1.5px solid rgba(0,0,0,0.18)', outline: 'none', fontSize: '1em' }}
           disabled={loading}
         />
       </div>
@@ -108,7 +108,18 @@ const PostForm: React.FC<PostFormProps> = ({
         <button
           type="button"
           disabled={loading || !isValid}
-          style={{ flex: 1, background: '#fff', color: '#2563eb', border: '1.5px solid #2563eb', borderRadius: 999, fontWeight: 700, fontSize: '1.08em', padding: '0.7em 0', cursor: loading || !isValid ? 'not-allowed' : 'pointer' }}
+          style={{
+            flex: 1,
+            background: '#fff',
+            color: '#111',
+            border: '1.5px solid #111',
+            borderRadius: 999,
+            fontWeight: 700,
+            fontSize: '1.08em',
+            padding: '0.7em 0',
+            cursor: loading || !isValid ? 'not-allowed' : 'pointer',
+            transition: 'background 0.18s',
+          }}
           onClick={e => handleSubmit(e as any, false)}
         >
           Save as Draft
@@ -116,7 +127,18 @@ const PostForm: React.FC<PostFormProps> = ({
         <button
           type="submit"
           disabled={loading || !isValid}
-          style={{ flex: 1, background: '#2563eb', color: '#fff', border: 'none', borderRadius: 999, fontWeight: 700, fontSize: '1.08em', padding: '0.7em 0', cursor: loading || !isValid ? 'not-allowed' : 'pointer' }}
+          style={{
+            flex: 1,
+            background: '#111',
+            color: '#fff',
+            border: '1.5px solid #111',
+            borderRadius: 999,
+            fontWeight: 700,
+            fontSize: '1.08em',
+            padding: '0.7em 0',
+            cursor: loading || !isValid ? 'not-allowed' : 'pointer',
+            transition: 'background 0.18s',
+          }}
           onClick={e => handleSubmit(e as any, true)}
         >
           Publish

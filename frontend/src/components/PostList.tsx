@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
 interface Post {
   id: number;
@@ -35,32 +37,71 @@ const PostList: React.FC<PostListProps> = ({ posts, onClick, onEdit, onDelete })
             style={{ marginBottom: '0.7rem', cursor: onClick ? 'pointer' : 'default', position: 'relative' }}
             onClick={onClick ? () => onClick(post) : undefined}
           >
+            {(onEdit || onDelete) && (
+              <div style={{
+                position: 'absolute',
+                top: 12,
+                right: 16,
+                display: 'flex',
+                gap: '0.5rem',
+                zIndex: 2,
+              }}>
+                {onEdit && (
+                  <button
+                    onClick={e => { e.stopPropagation(); onEdit(post); }}
+                    aria-label="Edit post"
+                    style={{
+                      background: '#fff',
+                      border: '2px solid #888',
+                      borderRadius: '50%',
+                      width: 36,
+                      height: 36,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+                      color: '#888',
+                      cursor: 'pointer',
+                      fontSize: 20,
+                      outline: 'none',
+                      padding: 0,
+                    }}
+                  >
+                    <FiEdit2 color="#888" size={18} />
+                  </button>
+                )}
+                {onDelete && (
+                  <button
+                    onClick={e => { e.stopPropagation(); onDelete(post); }}
+                    aria-label="Delete post"
+                    style={{
+                      background: '#fff',
+                      border: '2px solid #888',
+                      borderRadius: '50%',
+                      width: 36,
+                      height: 36,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+                      color: '#888',
+                      cursor: 'pointer',
+                      fontSize: 20,
+                      outline: 'none',
+                      padding: 0,
+                    }}
+                  >
+                    <FiTrash2 color="#888" size={18} />
+                  </button>
+                )}
+              </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ flex: 1 }}>
-                <h3 style={{ marginBottom: '0.5rem' }}>{post.title}</h3>
-                {snippet && <p style={{ marginBottom: '0.5rem', color: '#444', fontSize: '1em' }}>{snippet}</p>}
-                <div style={{ fontSize: '0.95em', color: '#666' }}>{new Date(post.createdAt).toLocaleDateString()}</div>
+            <h3 style={{ marginBottom: '0.5rem' }}>{post.title}</h3>
+            {snippet && <p style={{ marginBottom: '0.5rem', color: '#444', fontSize: '1em' }}>{snippet}</p>}
+            <div style={{ fontSize: '0.95em', color: '#666' }}>{new Date(post.createdAt).toLocaleDateString()}</div>
               </div>
-              {(onEdit || onDelete) && (
-                <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
-                  {onEdit && (
-                    <button
-                      onClick={e => { e.stopPropagation(); onEdit(post); }}
-                      style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 4, padding: '0.5em 1em', cursor: 'pointer' }}
-                    >
-                      Edit
-                    </button>
-                  )}
-                  {onDelete && (
-                    <button
-                      onClick={e => { e.stopPropagation(); onDelete(post); }}
-                      style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 4, padding: '0.5em 1em', cursor: 'pointer' }}
-                    >
-                      Delete
-                    </button>
-                  )}
-                </div>
-              )}
             </div>
           </li>
         );
