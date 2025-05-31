@@ -3,12 +3,15 @@ import { useAuth } from '../AuthContext';
 import Avatar from '../components/Avatar';
 import PostList from '../components/PostList';
 import * as api from '../api';
+import { useNavigate } from 'react-router-dom';
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) return;
@@ -18,6 +21,23 @@ const Profile: React.FC = () => {
       .catch(() => setError('Failed to load posts'))
       .finally(() => setLoading(false));
   }, [user]);
+
+  const handleEdit = (post: any) => {
+    navigate(`/posts/${post.id}/edit`);
+  };
+
+  const handleDelete = async (post: any) => {
+    if (!window.confirm('Are you sure you want to delete this post?')) return;
+    setDeleting(post.id);
+    try {
+      await api.deletePost(post.id);
+      setPosts(posts => posts.filter((p: any) => p.id !== post.id));
+    } catch (err: any) {
+      alert(err.message || 'Failed to delete post');
+    } finally {
+      setDeleting(null);
+    }
+  };
 
   if (!user) return null;
 
@@ -36,7 +56,11 @@ const Profile: React.FC = () => {
       ) : error ? (
         <div style={{ color: 'red' }}>{error}</div>
       ) : (
-        <PostList posts={posts.map(post => ({ ...post, createdAt: post.created_at }))} />
+        <PostList
+          posts={posts.map(post => ({ ...post, createdAt: post.created_at }))}
+          onEdit={handleEdit}
+          onDelete={deleting ? (post => post.id === deleting ? () => {} : handleDelete(post)) : handleDelete}
+        />
       )}
     </div>
   );
