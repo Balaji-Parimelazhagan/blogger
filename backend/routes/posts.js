@@ -34,4 +34,9 @@ router.use('/:post_id/comments', require('./comments'));
 // Mount related posts router
 router.use('/:post_id/related', require('./related'));
 
+// Tagging endpoints for posts
+router.get('/:id/tags', blogPostController.listTagsForPost);
+router.post('/:id/tags', blogPostController.addTagToPost);
+router.delete('/:id/tags', blogPostController.removeTagFromPost);
+
 module.exports = router; 

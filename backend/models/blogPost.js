@@ -1,6 +1,8 @@
 const { DataTypes, Model } = require('sequelize');
 const { sequelize } = require('./index');
 const RelatedPost = require('./relatedPost');
+const Tag = require('./tag');
+const PostTag = require('./postTag');
 
 class BlogPost extends Model {}
 
@@ -56,5 +58,12 @@ BlogPost.init(
 BlogPost.hasMany(RelatedPost, { as: 'RelatedLinks', foreignKey: 'post_id' });
 BlogPost.hasMany(RelatedPost, { as: 'RelatedTo', foreignKey: 'related_post_id' });
 RelatedPost.belongsTo(BlogPost, { as: 'Related', foreignKey: 'related_post_id' });
+
+BlogPost.belongsToMany(Tag, {
+  through: PostTag,
+  foreignKey: 'post_id',
+  otherKey: 'tag_id',
+  as: 'tags',
+});
 
 module.exports = BlogPost; 

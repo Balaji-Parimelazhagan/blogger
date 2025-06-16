@@ -10,4 +10,9 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   logging: false,
 });
 
-module.exports = { sequelize }; 
+// Load models and associations
+const BlogPost = require('./blogPost');
+const Tag = require('./tag');
+const PostTag = require('./postTag');
+
+module.exports = { sequelize, BlogPost, Tag, PostTag }; 
