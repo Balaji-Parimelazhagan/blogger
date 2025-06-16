@@ -2,6 +2,13 @@ const BlogPost = require('../models/blogPost');
 const { validationResult } = require('express-validator');
 const DOMPurify = require('isomorphic-dompurify');
 const User = require('../models/user');
+const BlogEventManager = require('../notifications/blogEventManager');
+const InAppNotificationObserver = require('../notifications/inAppNotificationObserver');
+const { createBlogEvent } = require('../notifications/eventTypes');
+
+// Initialize event manager and attach observer (in a real app, this should be done once globally)
+const eventManager = new BlogEventManager();
+eventManager.attach(new InAppNotificationObserver());
 
 exports.createPost = async (req, res, next) => {
   try {
@@ -18,6 +25,20 @@ exports.createPost = async (req, res, next) => {
       published: published === true,
       author_id: req.user.id,
     });
+
+    // Notify observers of new post event
+    const event = createBlogEvent(
+      'POST_CREATED',
+      {
+        postId: post.id,
+        title: post.title,
+        authorId: req.user.id,
+        status: 'created'
+      },
+      req.user.id
+    );
+    eventManager.notify(event);
+
     res.status(201).json(post);
   } catch (err) {
     next(err);
@@ -84,6 +105,20 @@ exports.updatePost = async (req, res, next) => {
     if (content !== undefined) post.content = DOMPurify.sanitize(content);
     if (published !== undefined) post.published = published;
     await post.save();
+
+    // Notify observers of post update event
+    const event = createBlogEvent(
+      'POST_UPDATED',
+      {
+        postId: post.id,
+        title: post.title,
+        authorId: req.user.id,
+        status: 'updated'
+      },
+      req.user.id
+    );
+    eventManager.notify(event);
+
     res.json(post);
   } catch (err) {
     next(err);

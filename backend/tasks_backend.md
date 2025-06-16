@@ -238,5 +238,3 @@ This is a living document for tracking backend development tasks. Update as work
 - **Status:** ✅ Completed. Implemented DELETE /posts/{post_id}/related/{related_post_id} with access control and Swagger docs. No deviations.
 
 ---
-
-# End of Task List 

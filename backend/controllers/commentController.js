@@ -2,6 +2,13 @@ const Comment = require('../models/comment');
 const BlogPost = require('../models/blogPost');
 const { validationResult } = require('express-validator');
 const DOMPurify = require('isomorphic-dompurify');
+const BlogEventManager = require('../notifications/blogEventManager');
+const InAppNotificationObserver = require('../notifications/inAppNotificationObserver');
+const { createBlogEvent } = require('../notifications/eventTypes');
+
+// Initialize event manager and attach observer (in a real app, this should be done once globally)
+const eventManager = new BlogEventManager();
+eventManager.attach(new InAppNotificationObserver());
 
 exports.addComment = async (req, res, next) => {
   try {
@@ -20,6 +27,20 @@ exports.addComment = async (req, res, next) => {
       author_id: req.user.id,
       content: cleanContent,
     });
+
+    // Notify observers of new comment event
+    const event = createBlogEvent(
+      'NEW_COMMENT',
+      {
+        postId: post.id,
+        commentId: comment.id,
+        content: cleanContent,
+        authorId: req.user.id
+      },
+      req.user.id
+    );
+    eventManager.notify(event);
+
     res.status(201).json(comment);
   } catch (err) {
     next(err);
