@@ -1,11 +1,9 @@
-const BlogPost = require('../models/blogPost');
+const { BlogPost, Tag, User } = require('../models');
 const { validationResult } = require('express-validator');
 const DOMPurify = require('isomorphic-dompurify');
-const User = require('../models/user');
 const BlogEventManager = require('../notifications/blogEventManager');
 const InAppNotificationObserver = require('../notifications/inAppNotificationObserver');
 const { createBlogEvent } = require('../notifications/eventTypes');
-const Tag = require('../models/tag');
 
 // Initialize event manager and attach observer (in a real app, this should be done once globally)
 const eventManager = new BlogEventManager();

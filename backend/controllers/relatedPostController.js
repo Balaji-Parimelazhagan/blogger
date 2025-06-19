@@ -1,5 +1,4 @@
-const RelatedPost = require('../models/relatedPost');
-const BlogPost = require('../models/blogPost');
+const { BlogPost, RelatedPost } = require('../models');
 
 exports.listRelated = async (req, res, next) => {
   try {

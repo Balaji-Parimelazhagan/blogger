@@ -1,5 +1,5 @@
+const { BlogPost } = require('../models');
 const Comment = require('../models/comment');
-const BlogPost = require('../models/blogPost');
 const { validationResult } = require('express-validator');
 const DOMPurify = require('isomorphic-dompurify');
 const BlogEventManager = require('../notifications/blogEventManager');
