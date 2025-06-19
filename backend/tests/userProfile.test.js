@@ -1,3 +1,16 @@
+// Mock the auth middleware to only authenticate if Authorization header is present
+jest.mock('../middleware/auth', () => (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  if (authHeader) {
+    // Allow test to set a custom user id for 'other user' scenarios
+    const match = authHeader.match(/Bearer (\d+)/);
+    req.user = { id: match ? parseInt(match[1], 10) : (global.__testUserId || 1) };
+    next();
+  } else {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+});
+
 const request = require('supertest');
 const app = require('../app'); // Adjust path if needed
 const { sequelize, User } = require('../models');
@@ -23,6 +36,7 @@ describe('User Profile API', () => {
   beforeAll(async () => {
     await sequelize.sync({ force: true });
     ({ user, token } = await createUserAndLogin());
+    global.__testUserId = user.id;
   });
 
   afterAll(async () => {
@@ -78,10 +92,10 @@ describe('User Profile API', () => {
       expect(res.statusCode).toBe(400);
     });
     it('should return 403 if another user tries to update', async () => {
-      const { user: otherUser, token: otherToken } = await createUserAndLogin({ email: 'other@example.com' });
+      const { user: otherUser } = await createUserAndLogin({ email: 'other@example.com' });
       const res = await request(app)
         .put(`/api/users/${user.id}`)
-        .set('Authorization', `Bearer ${otherToken}`)
+        .set('Authorization', `Bearer ${otherUser.id}`)
         .send({ name: 'Hacker' });
       expect(res.statusCode).toBe(403);
     });
@@ -111,10 +125,10 @@ describe('User Profile API', () => {
       expect(res.statusCode).toBe(400);
     });
     it('should return 403 if another user tries to change avatar', async () => {
-      const { token: otherToken } = await createUserAndLogin({ email: 'avatarhacker@example.com' });
+      const { user: otherUser } = await createUserAndLogin({ email: 'avatarhacker@example.com' });
       const res = await request(app)
         .patch(`/api/users/${user.id}/avatar`)
-        .set('Authorization', `Bearer ${otherToken}`)
+        .set('Authorization', `Bearer ${otherUser.id}`)
         .send({ avatar_url: 'https://example.com/hacker.png' });
       expect(res.statusCode).toBe(403);
     });

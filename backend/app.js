@@ -21,7 +21,7 @@ app.use(cors({
 // Routes
 // TODO: Add user, post, comment, related routes
 // Example: app.use('/users', require('./routes/users'));
-app.use('/users', usersRouter);
+app.use('/api/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/posts', postsRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
