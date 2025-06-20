@@ -1,34 +1,38 @@
-"use strict";
+'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('post_tags', {
+    await queryInterface.createTable('posts', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      post_id: {
+      title: {
+        type: Sequelize.STRING(255),
+        allowNull: false
+      },
+      content: {
+        type: Sequelize.TEXT,
+        allowNull: false
+      },
+      author_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'posts',
+          model: 'users',
           key: 'id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      tag_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'tags',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+      status: {
+        type: Sequelize.ENUM('draft', 'published', 'archived'),
+        defaultValue: 'draft'
+      },
+      published_at: {
+        type: Sequelize.DATE
       },
       created_at: {
         allowNull: false,
@@ -42,13 +46,11 @@ module.exports = {
       }
     });
 
-    await queryInterface.addIndex('post_tags', ['post_id', 'tag_id'], {
-      unique: true,
-      name: 'post_tags_unique'
-    });
+    await queryInterface.addIndex('posts', ['author_id']);
+    await queryInterface.addIndex('posts', ['status', 'published_at']);
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('post_tags');
+    await queryInterface.dropTable('posts');
   }
 }; 

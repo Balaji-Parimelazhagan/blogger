@@ -11,24 +11,38 @@ eventManager.attach(new InAppNotificationObserver());
 
 exports.createPost = async (req, res, next) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
-    const { title, content, published, tagIds } = req.body;
+    const { title, content } = req.body;
+    if (!title || typeof title !== 'string' || title.trim().length < 2 || title.length > 200) {
+      return res.status(400).json({ error: 'Title must be 2-200 chars' });
+    }
+    if (!content || typeof content !== 'string' || content.trim().length < 1 || content.length > 10000) {
+      return res.status(400).json({ error: 'Content must be 1-10000 chars' });
+    }
+    const suspicious = /('|--|;|<script>)/i;
+    if (suspicious.test(title) || suspicious.test(content)) {
+      return res.status(400).json({ error: 'Invalid input' });
+    }
+    // Check for duplicate title for this user
+    const existing = await BlogPost.findOne({ where: { title, author_id: req.user.id } });
+    if (existing) {
+      return res.status(409).json({ error: 'Post title already exists' });
+    }
     // Sanitize content to prevent XSS
     const cleanContent = DOMPurify.sanitize(content);
     const post = await BlogPost.create({
       title,
       content: cleanContent,
-      published: published === true,
+      published: req.body.published === true,
       author_id: req.user.id,
     });
 
     // Handle tags if provided
-    if (Array.isArray(tagIds) && tagIds.length > 0) {
+    if (Array.isArray(req.body.tagIds) && req.body.tagIds.length > 0) {
       // Remove duplicates
-      const uniqueTagIds = [...new Set(tagIds)];
+      const uniqueTagIds = [...new Set(req.body.tagIds)];
       // Ensure all tags exist
       const tags = await Tag.findAll({ where: { id: uniqueTagIds } });
       if (tags.length !== uniqueTagIds.length) {
@@ -84,17 +98,15 @@ exports.listPosts = async (req, res, next) => {
   }
 };
 
-exports.getPostById = async (req, res, next) => {
+exports.getPost = async (req, res, next) => {
   try {
-    const post = await BlogPost.findByPk(req.params.id);
+    const postId = parseInt(req.params.id, 10);
+    if (isNaN(postId) || postId < 1) {
+      return res.status(400).json({ error: 'Invalid post ID' });
+    }
+    const post = await BlogPost.findByPk(postId);
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
-    }
-    // If not published, only author can view
-    if (!post.published) {
-      if (!req.user || req.user.id !== post.author_id) {
-        return res.status(403).json({ error: 'Forbidden: Not allowed to view this draft' });
-      }
     }
     res.json(post);
   } catch (err) {
@@ -104,16 +116,39 @@ exports.getPostById = async (req, res, next) => {
 
 exports.updatePost = async (req, res, next) => {
   try {
-    const post = await BlogPost.findByPk(req.params.id);
+    const postId = parseInt(req.params.id, 10);
+    if (isNaN(postId) || postId < 1) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+    const post = await BlogPost.findByPk(postId);
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
     }
-    if (!req.user || req.user.id !== post.author_id) {
-      return res.status(403).json({ error: 'Forbidden: Only the author can update this post' });
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    if (post.author_id !== req.user.id) {
+      return res.status(403).json({ error: 'Forbidden' });
     }
     const { title, content, published, tagIds } = req.body;
+    if (title !== undefined && (typeof title !== 'string' || title.trim().length < 2 || title.length > 200)) {
+      return res.status(400).json({ error: 'Title must be 2-200 chars' });
+    }
+    if (content !== undefined && (typeof content !== 'string' || content.trim().length < 1 || content.length > 10000)) {
+      return res.status(400).json({ error: 'Content must be 1-10000 chars' });
+    }
+    if (title !== undefined && title.trim().length === 0) {
+      return res.status(400).json({ error: 'Title must be a non-empty string' });
+    }
+    if (content !== undefined && content.trim().length === 0) {
+      return res.status(400).json({ error: 'Content must be a non-empty string' });
+    }
+    const suspicious = /('|--|;|<script>)/i;
+    if ((title && suspicious.test(title)) || (content && suspicious.test(content))) {
+      return res.status(400).json({ error: 'Invalid input' });
+    }
     if (title !== undefined) post.title = title;
-    if (content !== undefined) post.content = DOMPurify.sanitize(content);
+    if (content !== undefined) post.content = content;
     if (published !== undefined) post.published = published;
     await post.save();
 
@@ -150,15 +185,22 @@ exports.updatePost = async (req, res, next) => {
 
 exports.deletePost = async (req, res, next) => {
   try {
-    const post = await BlogPost.findByPk(req.params.id);
+    const postId = parseInt(req.params.id, 10);
+    if (isNaN(postId) || postId < 1) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+    const post = await BlogPost.findByPk(postId);
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
     }
-    if (!req.user || req.user.id !== post.author_id) {
-      return res.status(403).json({ error: 'Forbidden: Only the author can delete this post' });
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    if (post.author_id !== req.user.id) {
+      return res.status(403).json({ error: 'Forbidden' });
     }
     await post.destroy();
-    res.status(204).send();
+    res.status(204).end();
   } catch (err) {
     next(err);
   }

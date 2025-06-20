@@ -1,34 +1,26 @@
-"use strict";
+'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('post_tags', {
+    await queryInterface.createTable('tags', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      post_id: {
-        type: Sequelize.INTEGER,
+      name: {
+        type: Sequelize.STRING(50),
         allowNull: false,
-        references: {
-          model: 'posts',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        unique: true
       },
-      tag_id: {
-        type: Sequelize.INTEGER,
+      slug: {
+        type: Sequelize.STRING(50),
         allowNull: false,
-        references: {
-          model: 'tags',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        unique: true
+      },
+      description: {
+        type: Sequelize.STRING(255)
       },
       created_at: {
         allowNull: false,
@@ -42,13 +34,18 @@ module.exports = {
       }
     });
 
-    await queryInterface.addIndex('post_tags', ['post_id', 'tag_id'], {
+    await queryInterface.addIndex('tags', ['name'], {
       unique: true,
-      name: 'post_tags_unique'
+      name: 'tags_name_unique'
+    });
+
+    await queryInterface.addIndex('tags', ['slug'], {
+      unique: true,
+      name: 'tags_slug_unique'
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('post_tags');
+    await queryInterface.dropTable('tags');
   }
 }; 

@@ -20,7 +20,7 @@ const optionalAuth = (req, res, next) => {
 };
 
 // GET /posts/:id - Get blog post by ID
-router.get('/:id', optionalAuth, blogPostController.getPostById);
+router.get('/:id', blogPostController.getPost);
 
 // PUT /posts/:id - Update blog post (author only)
 router.put('/:id', auth, require('../validators/blogPostValidator').updatePostValidator, blogPostController.updatePost);
@@ -35,8 +35,8 @@ router.use('/:post_id/comments', require('./comments'));
 router.use('/:post_id/related', require('./related'));
 
 // Tagging endpoints for posts
-router.get('/:id/tags', blogPostController.listTagsForPost);
-router.post('/:id/tags', blogPostController.addTagToPost);
-router.delete('/:id/tags', blogPostController.removeTagFromPost);
+router.get('/:id/tags', auth, blogPostController.listTagsForPost);
+router.post('/:id/tags', auth, blogPostController.addTagToPost);
+router.delete('/:id/tags', auth, blogPostController.removeTagFromPost);
 
 module.exports = router; 

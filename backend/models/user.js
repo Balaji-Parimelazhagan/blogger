@@ -1,4 +1,5 @@
 const { DataTypes, Model } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 module.exports = (sequelize) => {
   class User extends Model {
@@ -6,6 +7,10 @@ module.exports = (sequelize) => {
       const values = { ...this.get() };
       delete values.password;
       return values;
+    }
+
+    async comparePassword(candidatePassword) {
+      return bcrypt.compare(candidatePassword, this.password);
     }
   }
 
@@ -40,6 +45,11 @@ module.exports = (sequelize) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      status: {
+        type: DataTypes.ENUM('active', 'locked'),
+        defaultValue: 'active',
+        allowNull: false,
+      },
     },
     {
       sequelize,
@@ -48,6 +58,18 @@ module.exports = (sequelize) => {
       timestamps: true,
       createdAt: 'created_at',
       updatedAt: 'updated_at',
+      hooks: {
+        beforeCreate: async (user) => {
+          if (user.password) {
+            user.password = await bcrypt.hash(user.password, 12);
+          }
+        },
+        beforeUpdate: async (user) => {
+          if (user.changed('password')) {
+            user.password = await bcrypt.hash(user.password, 12);
+          }
+        },
+      },
     }
   );
 

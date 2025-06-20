@@ -1,9 +1,8 @@
-"use strict";
+'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('post_tags', {
+    await queryInterface.createTable('related_posts', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -20,15 +19,20 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      tag_id: {
+      related_post_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'tags',
+          model: 'posts',
           key: 'id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
+      },
+      relationship_type: {
+        type: Sequelize.STRING(50),
+        allowNull: false,
+        defaultValue: 'related'
       },
       created_at: {
         allowNull: false,
@@ -42,13 +46,13 @@ module.exports = {
       }
     });
 
-    await queryInterface.addIndex('post_tags', ['post_id', 'tag_id'], {
+    await queryInterface.addIndex('related_posts', ['post_id', 'related_post_id'], {
       unique: true,
-      name: 'post_tags_unique'
+      name: 'related_posts_unique'
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('post_tags');
+    await queryInterface.dropTable('related_posts');
   }
 }; 

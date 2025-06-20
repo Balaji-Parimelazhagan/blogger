@@ -3,6 +3,7 @@ const WINDOW_SIZE = 10 * 60 * 1000; // 10 minutes
 const MAX_REQUESTS = 5;
 
 module.exports = (req, res, next) => {
+  if (process.env.NODE_ENV === 'test') return next();
   const ip = req.ip;
   const now = Date.now();
   if (!rateLimit[ip]) {

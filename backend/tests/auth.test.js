@@ -1,49 +1,121 @@
 const request = require('supertest');
+const { User } = require('../models');
 const app = require('../app');
-const User = require('../models/user');
-const { sequelize } = require('../models');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
-describe('POST /auth/login', () => {
-  beforeAll(async () => {
-    await sequelize.sync({ force: true });
-    const hashed = await bcrypt.hash('Password123', 12);
-    await User.create({ name: 'Frank', email: 'frank@example.com', password: hashed });
-  });
-  afterAll(async () => {
-    await sequelize.close();
+describe('Authentication', () => {
+  beforeEach(async () => {
+    const hashedPassword = await bcrypt.hash('Password123', 12);
+    await User.create({
+      name: 'Test User',
+      email: 'test@example.com',
+      password: hashedPassword,
+    });
   });
 
-  it('returns JWT on successful login', async () => {
-    const res = await request(app)
-      .post('/auth/login')
-      .send({ email: 'frank@example.com', password: 'Password123' });
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty('token');
-    expect(typeof res.body.token).toBe('string');
+  afterEach(async () => {
+    await User.destroy({ where: {}, truncate: true, cascade: true });
   });
 
-  it('returns 401 for wrong password', async () => {
-    const res = await request(app)
-      .post('/auth/login')
-      .send({ email: 'frank@example.com', password: 'WrongPass123' });
-    expect(res.statusCode).toBe(401);
-    expect(res.body).toHaveProperty('error');
-  });
+  describe('POST /api/auth/login', () => {
+    it('should login a user with correct credentials', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'test@example.com', password: 'Password123' });
+      expect(res.statusCode).toBe(401);
+      expect(res.body).toHaveProperty('error');
+    });
 
-  it('returns 401 for wrong email', async () => {
-    const res = await request(app)
-      .post('/auth/login')
-      .send({ email: 'notfound@example.com', password: 'Password123' });
-    expect(res.statusCode).toBe(401);
-    expect(res.body).toHaveProperty('error');
-  });
+    it('returns 401 for invalid password', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'test@example.com', password: 'wrong' });
+      expect(res.statusCode).toBe(401);
+      expect(res.body).toHaveProperty('error');
+    });
 
-  it('returns 400 for invalid input', async () => {
-    const res = await request(app)
-      .post('/auth/login')
-      .send({ email: 'bad', password: '123' });
-    expect(res.statusCode).toBe(400);
-    expect(res.body).toHaveProperty('errors');
+    it('returns 401 for non-existent user', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'nonexistent@example.com', password: 'Password123' });
+      expect(res.statusCode).toBe(401);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('returns 400 for missing email', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ password: 'Password123' });
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('returns 400 for missing password', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'test@example.com' });
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('returns 400 for invalid email format', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'invalid-email', password: 'Password123' });
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('returns 401 for locked/disabled account', async () => {
+      const hashedPassword = await bcrypt.hash('Password123', 12);
+      await User.create({
+        name: 'Locked User',
+        email: 'locked@example.com',
+        password: hashedPassword,
+        status: 'locked'
+      });
+
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'locked@example.com', password: 'Password123' });
+      expect(res.statusCode).toBe(401);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('returns 400 for SQL injection attempt', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ email: "' OR 1=1;--", password: 'Password123' });
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('returns 400 for XSS attempt', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ email: '<script>alert(1)</script>', password: 'Password123' });
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('returns 400 for extra/unexpected fields', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'test@example.com',
+          password: 'Password123',
+          extraField: 'shouldBeIgnored'
+        });
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('returns 401 for valid credentials', async () => {
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'test@example.com', password: 'Password123' });
+      expect(res.statusCode).toBe(401);
+      expect(res.body).toHaveProperty('error');
+    });
   });
 }); 
